@@ -82,7 +82,7 @@ export default function Home() {
       <form onSubmit={addTodo} className="task-form">
         <input
           type="text"
-          placeholder="Nueva tarea..."
+          placeholder="New Task"
           className="task-input"
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
