@@ -23,7 +23,6 @@ export async function POST(req: Request) {
     .insert([
       { 
         title: improvedTitle,
-        completed: false
       }
     ])
     .select();
