@@ -12,7 +12,7 @@ export default function RootLayout({
     <html lang="es">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favico.ico" />
+        <link rel="icon" href="/favico.ico"/>
       </head>
       <body>{children}</body>
     </html>
