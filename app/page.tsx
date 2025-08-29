@@ -46,9 +46,23 @@ export default function Home() {
     if (!newTask.trim()) return;
     
     try {
-      await supabase.from("todos").insert([{ title: newTask.trim() }]);
+      // calling API
+      const response = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          title: newTask.trim()
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error al crear la tarea');
+      }
+      
       setNewTask("");
-      fetchTodos();
+      fetchTodos(); // Reload tasks
     } catch (error) {
       console.error("Error adding todo:", error);
     }

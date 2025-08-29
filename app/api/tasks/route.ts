@@ -7,7 +7,7 @@ const supabase = createClient(
 );
 
 export async function POST(req: Request) {
-  const { title, user_id } = await req.json();
+  const { title } = await req.json();
 
   const res = await fetch(process.env.N8N_WEBHOOK_URL!, {
     method: "POST",
@@ -16,14 +16,14 @@ export async function POST(req: Request) {
   });
 
   const data = await res.json();
+  const improvedTitle = data.improvedTitle || title;
 
   const { data: task, error } = await supabase
-    .from("tasks")
+    .from("todos")
     .insert([
       { 
-        user_id, 
-        original_title: title, 
-        improved_title: data.improvedTitle 
+        title: improvedTitle,
+        completed: false
       }
     ])
     .select();
