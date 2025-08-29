@@ -76,7 +76,7 @@ export default function Home() {
   return (
     <div className="container">
       <header className="app-header">
-        <h1 className="app-title">Gestor de Tareas</h1>
+        <h1 className="app-title">Tasks TO-DO App</h1>
       </header>
 
       <form onSubmit={addTodo} className="task-form">
@@ -87,13 +87,13 @@ export default function Home() {
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
         />
-        <button type="submit" className="btn btn-primary">Agregar</button>
+        <button type="submit" className="btn btn-primary">Add Task</button>
       </form>
 
       {loading ? (
-        <div className="empty-state">Cargando tareas...</div>
+        <div className="empty-state">Loading tasks...</div>
       ) : todos.length === 0 ? (
-        <div className="empty-state">No hay tareas pendientes. ¡Añade una!</div>
+        <div className="empty-state">No tasks pending. Add a new one!</div>
       ) : (
         <ul className="task-list">
           {todos.map((todo) => (
@@ -114,7 +114,7 @@ export default function Home() {
                   onClick={() => editTodo(todo.id, todo.title)} 
                   className="btn btn-edit"
                 >
-                  Editar
+                  Edit
                 </button>
               </div>
             </li>
