@@ -1,0 +1,77 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "improve-task",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "abcd1234"
+    },
+    {
+      "parameters": {
+        "operation": "chat",
+        "model": "gpt-3.5-turbo",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Eres un asistente que mejora títulos de tareas para que sean más claros y útiles."
+          },
+          {
+            "role": "user",
+            "content": "Mejora este título de tarea: {{$json[\"body\"][\"title\"]}}"
+          }
+        ]
+      },
+      "id": "2",
+      "name": "OpenAI - Improve Title",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [550, 300],
+      "credentials": {
+        "openAiApi": "OpenAI API Account"
+      }
+    },
+    {
+      "parameters": {
+        "responseBody": "{{$json[\"choices\"][0][\"message\"][\"content\"]}}",
+        "responseCode": 200
+      },
+      "id": "3",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [850, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI - Improve Title",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI - Improve Title": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

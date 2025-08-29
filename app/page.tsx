@@ -91,7 +91,7 @@ export default function Home() {
   return (
     <div className="container">
       <header className="app-header">
-        <h1 className="app-title">Tasks TO-DO App</h1>
+        <h1 className="app-title">TO-DO App</h1>
       </header>
 
       <form onSubmit={addTodo} className="task-form">
@@ -137,11 +137,11 @@ export default function Home() {
         </ul>
       )}
 
-      {/* Modal de edición */}
+      {/* Modal */}
       {editingTask && (
         <div className="modal-overlay">
           <div className="edit-modal">
-            <h3 className="edit-modal-title">Editar tarea</h3>
+            <h3 className="edit-modal-title">Edit task</h3>
             <input
               type="text"
               className="task-input"
@@ -150,8 +150,8 @@ export default function Home() {
               autoFocus
             />
             <div className="edit-modal-actions">
-              <button onClick={closeEditModal} className="btn">Cancelar</button>
-              <button onClick={saveEdit} className="btn btn-primary">Guardar</button>
+              <button onClick={closeEditModal} className="btn">Cancel</button>
+              <button onClick={saveEdit} className="btn btn-primary">Save</button>
             </div>
           </div>
         </div>
