@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'Gestor de Tareas',
-  description: 'Aplicación moderna para gestionar tus tareas diarias',
+  title: 'Todo App',
+  description: 'Modern Todo App to manage your tasks daily',
 }
 
 export default function RootLayout({

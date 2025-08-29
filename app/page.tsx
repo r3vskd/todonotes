@@ -13,6 +13,8 @@ export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTask, setNewTask] = useState("");
   const [loading, setLoading] = useState(true);
+  const [editingTask, setEditingTask] = useState<{id: string, title: string} | null>(null);
+  const [editedTitle, setEditedTitle] = useState("");
 
   useEffect(() => {
     fetchTodos();
@@ -61,15 +63,28 @@ export default function Home() {
     }
   }
 
-  async function editTodo(id: string, title: string) {
-    const newTitle = prompt("Editar tarea:", title);
-    if (newTitle && newTitle.trim() !== title) {
-      try {
-        await supabase.from("todos").update({ title: newTitle.trim() }).eq("id", id);
-        fetchTodos();
-      } catch (error) {
-        console.error("Error editing todo:", error);
-      }
+  function openEditModal(id: string, title: string) {
+    setEditingTask({ id, title });
+    setEditedTitle(title);
+  }
+
+  function closeEditModal() {
+    setEditingTask(null);
+    setEditedTitle("");
+  }
+
+  async function saveEdit() {
+    if (!editingTask || !editedTitle.trim() || editedTitle.trim() === editingTask.title) {
+      closeEditModal();
+      return;
+    }
+
+    try {
+      await supabase.from("todos").update({ title: editedTitle.trim() }).eq("id", editingTask.id);
+      fetchTodos();
+      closeEditModal();
+    } catch (error) {
+      console.error("Error editing todo:", error);
     }
   }
 
@@ -111,7 +126,7 @@ export default function Home() {
               </div>
               <div className="task-actions">
                 <button 
-                  onClick={() => editTodo(todo.id, todo.title)} 
+                  onClick={() => openEditModal(todo.id, todo.title)} 
                   className="btn btn-edit"
                 >
                   Edit
@@ -120,6 +135,26 @@ export default function Home() {
             </li>
           ))}
         </ul>
+      )}
+
+      {/* Modal de edición */}
+      {editingTask && (
+        <div className="modal-overlay">
+          <div className="edit-modal">
+            <h3 className="edit-modal-title">Editar tarea</h3>
+            <input
+              type="text"
+              className="task-input"
+              value={editedTitle}
+              onChange={(e) => setEditedTitle(e.target.value)}
+              autoFocus
+            />
+            <div className="edit-modal-actions">
+              <button onClick={closeEditModal} className="btn">Cancelar</button>
+              <button onClick={saveEdit} className="btn btn-primary">Guardar</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
