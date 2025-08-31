@@ -1,0 +1,131 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "improve-task",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "fae0bb8d-acff-49ba-b929-da2f32ccf005",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        48
+      ],
+      "webhookId": "abcd1234"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"improvedTitle\": \"{{$json.improvedTitle}}\"\n}",
+        "options": {}
+      },
+      "id": "3b62ae09-5ca3-4bf2-a185-f19de088f1c0",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        848,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "model": "gpt-4o-mini",
+        "prompt": {
+          "messages": [
+            {
+              "role": "system",
+              "content": "Eres un asistente que mejora títulos de tareas para que sean claros."
+            },
+            {
+              "role": "user", 
+              "content": "Mejora este título de tarea para que sea más claro y conciso, manteniendo el idioma original: {{$node[\\\"Webhook Trigger\\\"].json.body.title}}"
+            }
+          ]
+        },
+        "options": {},
+        "requestOptions": {}
+      },
+      "id": "26951c58-1745-4526-8dfb-37b11dae5a3f",
+      "name": "OpenAI - Improved Title",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        448,
+        0
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "0XCjgnegAduwWAjP",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Este código extrae el contenido mejorado del título de la respuesta de OpenAI\n// y lo formatea como un objeto JSON con la propiedad 'improvedTitle'\n\n// Accedemos a los datos de entrada (la respuesta de OpenAI)\nconst openAiResponse = $input.first();\n\n// Intentamos acceder al contenido mejorado en diferentes estructuras posibles\nlet improvedTitle = \"No se pudo procesar el título mejorado\";\n\n// Verificamos la estructura que has mostrado (array con mensaje en [0])\nif (Array.isArray(openAiResponse) && openAiResponse[0] && openAiResponse[0].message && openAiResponse[0].message.content) {\n  // Estructura que estás recibiendo actualmente\n  improvedTitle = openAiResponse[0].message.content;\n} else if (openAiResponse && openAiResponse.choices && openAiResponse.choices[0] && openAiResponse.choices[0].message) {\n  // Estructura estándar de OpenAI\n  improvedTitle = openAiResponse.choices[0].message.content;\n} else if (openAiResponse && openAiResponse.message && openAiResponse.message.content) {\n  // Estructura alternativa (si n8n ya ha procesado la respuesta)\n  improvedTitle = openAiResponse.message.content;\n} else if (openAiResponse && openAiResponse.content) {\n  // Otra estructura posible\n  improvedTitle = openAiResponse.content;\n} else if (typeof openAiResponse === 'string') {\n  // Si la respuesta es directamente un string\n  improvedTitle = openAiResponse;\n}\n\n// Devolvemos un objeto JSON con la estructura esperada\nreturn {\n  json: {\n    improvedTitle: improvedTitle\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        656,
+        48
+      ],
+      "id": "acab0727-f6b9-4b63-b1e7-b7f53c70209c",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI - Improved Title",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI - Improved Title": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "368d60d4-542f-42c5-a944-d51911c878cf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2e69fabf38c590933c29f533a5c3e3e44b3706a9714d4f20ba1034b88ea35742"
+  },
+  "id": "n7rPwQdLGm1slW2i",
+  "tags": []
+}

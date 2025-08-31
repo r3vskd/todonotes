@@ -11,7 +11,6 @@ export async function POST(req: Request) {
   let improvedTitle = title;
 
   try {
-    // Intentar mejorar el título con n8n
     const res = await fetch(process.env.N8N_WEBHOOK_URL!, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -20,14 +19,11 @@ export async function POST(req: Request) {
 
     if (res.ok) {
       const data = await res.json();
-      // Verificar diferentes formatos posibles de respuesta
       if (data.improvedTitle) {
         improvedTitle = data.improvedTitle;
       } else if (typeof data === 'string') {
-        // Si n8n devuelve directamente un string
         improvedTitle = data;
       } else if (data.choices && data.choices[0] && data.choices[0].message) {
-        // Si devuelve el formato directo de OpenAI
         improvedTitle = data.choices[0].message.content;
       }
       console.log("Título mejorado recibido:", improvedTitle);
@@ -36,7 +32,6 @@ export async function POST(req: Request) {
     }
   } catch (error) {
     console.error("Error al conectar con n8n:", error);
-    // Continuar con el título original si n8n no está disponible
   }
 
   try {
