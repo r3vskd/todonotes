@@ -3,17 +3,17 @@
   "nodes": [
     {
       "parameters": {
-        "respondWith": "json",
-        "responseBody": "={\n  \"improvedTitle\": \"{{$json.improvedTitle}}\"\n}",
-        "options": {}
+        "options": {
+          "responseCode": 200
+        }
       },
       "id": "96474ef7-da85-4dbf-a15d-fb7ce8193059",
       "name": "Respond to Webhook1",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        912,
-        272
+        960,
+        192
       ]
     },
     {
@@ -23,15 +23,14 @@
         "prompt": {
           "messages": [
             {
-              "role": "system",
               "content": "Eres un asistente que mejora títulos de tareas para que sean claros."
             },
             {
-              "role": "user",
-              "content": "Mejora este título de tarea para que sea más claro y conciso, manteniendo el idioma original: {{$node[\\\"Webhook1\\\"].json.body.title}}"
+              "content": "=Mejora este título de tarea para que sea más claro y conciso, manteniendo el idioma original: {{ $json.body.body.title }}"
             }
           ]
         },
+        "simplifyOutput": false,
         "options": {},
         "requestOptions": {}
       },
@@ -40,8 +39,8 @@
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1,
       "position": [
-        496,
-        256
+        432,
+        224
       ],
       "credentials": {
         "openAiApi": {
@@ -52,13 +51,13 @@
     },
     {
       "parameters": {
-        "jsCode": "// Este código extrae el contenido mejorado del título de la respuesta de OpenAI\n// y lo formatea como un objeto JSON con la propiedad 'improvedTitle'\n\n// Accedemos a los datos de entrada (la respuesta de OpenAI)\nconst openAiResponse = $input.first();\n\n// Intentamos acceder al contenido mejorado en diferentes estructuras posibles\nlet improvedTitle = \"No se pudo procesar el título mejorado\";\n\n// Verificamos la estructura que has mostrado (array con mensaje en [0])\nif (Array.isArray(openAiResponse) && openAiResponse[0] && openAiResponse[0].message && openAiResponse[0].message.content) {\n  // Estructura que estás recibiendo actualmente\n  improvedTitle = openAiResponse[0].message.content;\n} else if (openAiResponse && openAiResponse.choices && openAiResponse.choices[0] && openAiResponse.choices[0].message) {\n  // Estructura estándar de OpenAI\n  improvedTitle = openAiResponse.choices[0].message.content;\n} else if (openAiResponse && openAiResponse.message && openAiResponse.message.content) {\n  // Estructura alternativa (si n8n ya ha procesado la respuesta)\n  improvedTitle = openAiResponse.message.content;\n} else if (openAiResponse && openAiResponse.content) {\n  // Otra estructura posible\n  improvedTitle = openAiResponse.content;\n} else if (typeof openAiResponse === 'string') {\n  // Si la respuesta es directamente un string\n  improvedTitle = openAiResponse;\n}\n\n// Devolvemos un objeto JSON con la estructura esperada\nreturn {\n  json: {\n    improvedTitle: improvedTitle\n  }\n};"
+        "jsCode": "// Este código extrae el contenido mejorado del título de la respuesta de OpenAI\n// y lo formatea como un objeto JSON con la propiedad 'improvedTitle'\n\n// Accedemos a los datos de entrada (la respuesta de OpenAI)\nconst openAiResponse = $input.first();\n\n// Intentamos acceder directamente a la estructura que has identificado\nlet improvedTitle = \"No se pudo procesar el título mejorado\";\n\n// Verificamos si existe la estructura específica que mencionaste\nif (openAiResponse && openAiResponse.json && openAiResponse.json.choices && \n    openAiResponse.json.choices[0] && openAiResponse.json.choices[0].message && \n    openAiResponse.json.choices[0].message.content) {\n  improvedTitle = openAiResponse.json.choices[0].message.content;\n} else {\n  // Mantenemos las verificaciones alternativas como respaldo\n  if (Array.isArray(openAiResponse) && openAiResponse[0] && openAiResponse[0].message && openAiResponse[0].message.content) {\n    improvedTitle = openAiResponse[0].message.content;\n  } else if (openAiResponse && openAiResponse.choices && openAiResponse.choices[0] && openAiResponse.choices[0].message) {\n    improvedTitle = openAiResponse.choices[0].message.content;\n  } else if (openAiResponse && openAiResponse.message && openAiResponse.message.content) {\n    improvedTitle = openAiResponse.message.content;\n  } else if (openAiResponse && openAiResponse.content) {\n    improvedTitle = openAiResponse.content;\n  } else if (typeof openAiResponse === 'string') {\n    improvedTitle = openAiResponse;\n  }\n}\n\n// Devolvemos un objeto JSON con la estructura esperada\nreturn {\n  json: {\n    improvedTitle: improvedTitle\n  }\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         704,
-        336
+        320
       ],
       "id": "46b45132-60c8-49bd-8f2d-e1978160bdb0",
       "name": "Code1"
@@ -75,8 +74,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        272,
-        304
+        48,
+        320
       ],
       "webhookId": "abcd1234"
     }
@@ -121,7 +120,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "58cde9bd-7a75-4a04-a858-a1f7d159a706",
+  "versionId": "22794f63-5805-4340-a094-81c40fb597aa",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2e69fabf38c590933c29f533a5c3e3e44b3706a9714d4f20ba1034b88ea35742"
