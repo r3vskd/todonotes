@@ -11,11 +11,11 @@ export async function POST(req: Request) {
   let improvedTitle = title;
 
   try {
-    const res = await fetch(process.env.N8N_WEBHOOK_URL!, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({title}),
-    });
+      const res = await fetch(process.env.N8N_WEBHOOK_URL!, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ body: { title } }),
+      });
 
     if (res.ok) {
       const data = await res.json();

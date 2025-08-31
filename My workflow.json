@@ -3,34 +3,17 @@
   "nodes": [
     {
       "parameters": {
-        "httpMethod": "POST",
-        "path": "improve-task",
-        "responseMode": "responseNode",
-        "options": {}
-      },
-      "id": "fae0bb8d-acff-49ba-b929-da2f32ccf005",
-      "name": "Webhook Trigger",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 1,
-      "position": [
-        0,
-        48
-      ],
-      "webhookId": "abcd1234"
-    },
-    {
-      "parameters": {
         "respondWith": "json",
         "responseBody": "={\n  \"improvedTitle\": \"{{$json.improvedTitle}}\"\n}",
         "options": {}
       },
-      "id": "3b62ae09-5ca3-4bf2-a185-f19de088f1c0",
-      "name": "Respond to Webhook",
+      "id": "96474ef7-da85-4dbf-a15d-fb7ce8193059",
+      "name": "Respond to Webhook1",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        848,
-        -16
+        912,
+        272
       ]
     },
     {
@@ -44,21 +27,21 @@
               "content": "Eres un asistente que mejora títulos de tareas para que sean claros."
             },
             {
-              "role": "user", 
-              "content": "Mejora este título de tarea para que sea más claro y conciso, manteniendo el idioma original: {{$node[\\\"Webhook Trigger\\\"].json.body.title}}"
+              "role": "user",
+              "content": "Mejora este título de tarea para que sea más claro y conciso, manteniendo el idioma original: {{$node[\\\"Webhook1\\\"].json.body.title}}"
             }
           ]
         },
         "options": {},
         "requestOptions": {}
       },
-      "id": "26951c58-1745-4526-8dfb-37b11dae5a3f",
-      "name": "OpenAI - Improved Title",
+      "id": "5cea19ac-4a57-44ba-bf63-8d877b4574d5",
+      "name": "OpenAI - Improved Title1",
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1,
       "position": [
-        448,
-        0
+        496,
+        256
       ],
       "credentials": {
         "openAiApi": {
@@ -74,42 +57,59 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        656,
-        48
+        704,
+        336
       ],
-      "id": "acab0727-f6b9-4b63-b1e7-b7f53c70209c",
-      "name": "Code"
+      "id": "46b45132-60c8-49bd-8f2d-e1978160bdb0",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "improve-task",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "02b6d8be-32f9-4acb-827f-ee669a0365e3",
+      "name": "Webhook1",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        272,
+        304
+      ],
+      "webhookId": "abcd1234"
     }
   ],
   "pinData": {},
   "connections": {
-    "Webhook Trigger": {
+    "OpenAI - Improved Title1": {
       "main": [
         [
           {
-            "node": "OpenAI - Improved Title",
+            "node": "Code1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "OpenAI - Improved Title": {
+    "Code1": {
       "main": [
         [
           {
-            "node": "Code",
+            "node": "Respond to Webhook1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code": {
+    "Webhook1": {
       "main": [
         [
           {
-            "node": "Respond to Webhook",
+            "node": "OpenAI - Improved Title1",
             "type": "main",
             "index": 0
           }
@@ -121,7 +121,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "368d60d4-542f-42c5-a944-d51911c878cf",
+  "versionId": "58cde9bd-7a75-4a04-a858-a1f7d159a706",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2e69fabf38c590933c29f533a5c3e3e44b3706a9714d4f20ba1034b88ea35742"
