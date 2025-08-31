@@ -1,5 +1,9 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# n8n
+My workflow.json
+C:\Users\maico\Documents\applies\todonotes-1\My workflow.json
+
 # dependencies
 /node_modules
 /.pnp
